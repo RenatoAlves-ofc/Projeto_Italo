@@ -1,0 +1,283 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f4f6f8;
+  color: #1f2937;
+}
+
+button,
+input {
+  font-family: inherit;
+}
+
+.app {
+  min-height: 100vh;
+}
+
+
+/* ============================= */
+/* HEADER */
+/* ============================= */
+
+.header {
+  background: #111827;
+  color: white;
+  padding: 30px 20px;
+}
+
+h1{
+  color: white;
+}
+.header h1 {
+  font-size: 28px;
+  margin-bottom: 5px;
+}
+
+.header p {
+  color: #9ca3af;
+}
+
+
+/* ============================= */
+/* CONTAINER */
+/* ============================= */
+
+.container {
+  width: 90%;
+  max-width: 1100px;
+  margin: 40px auto;
+}
+
+
+/* ============================= */
+/* CARD */
+/* ============================= */
+
+.card {
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.06);
+}
+
+.card h2 {
+  margin-bottom: 20px;
+}
+
+
+/* ============================= */
+/* FORM */
+/* ============================= */
+
+.form {
+  display: flex;
+  align-items: flex-end;
+  gap: 15px;
+}
+
+.input-group {
+  flex: 1;
+}
+
+.input-group label {
+  display: block;
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.input-group input {
+  width: 100%;
+  height: 45px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 15px;
+  font-size: 15px;
+  outline: none;
+}
+
+.input-group input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+
+/* ============================= */
+/* BOTÕES */
+/* ============================= */
+
+.buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.btn {
+  border: none;
+  border-radius: 7px;
+  padding: 10px 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+.btn-primary {
+  background: #2563eb;
+  color: white;
+}
+
+.btn-secondary {
+  background: #6b7280;
+  color: white;
+}
+
+.btn-refresh {
+  background: #111827;
+  color: white;
+}
+
+.btn-edit {
+  background: #f59e0b;
+  color: white;
+}
+
+.btn-delete {
+  background: #dc2626;
+  color: white;
+}
+
+
+/* ============================= */
+/* LISTA */
+/* ============================= */
+
+.list-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.list-header h2 {
+  margin-bottom: 5px;
+}
+
+.list-header span {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+
+/* ============================= */
+/* TABELA */
+/* ============================= */
+
+.table-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead {
+  background: #f9fafb;
+}
+
+th,
+td {
+  text-align: left;
+  padding: 15px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  font-size: 14px;
+  color: #4b5563;
+}
+
+td {
+  font-size: 15px;
+}
+
+tbody tr:hover {
+  background: #f9fafb;
+}
+
+
+/* ============================= */
+/* AÇÕES */
+/* ============================= */
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+
+/* ============================= */
+/* MENSAGEM */
+/* ============================= */
+
+.message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #6b7280;
+}
+
+
+/* ============================= */
+/* RESPONSIVO */
+/* ============================= */
+
+@media (max-width: 700px) {
+
+  .container {
+    width: 95%;
+    margin: 20px auto;
+  }
+
+  .form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .buttons {
+    width: 100%;
+  }
+
+  .buttons .btn {
+    flex: 1;
+  }
+
+  .list-header {
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+}
+
+.footer{
+  margin: 12px;
+  background-color: #000;
+  
+}
+a{
+  padding: 12px;
+  text-decoration: none;
+  color: #fff;
+}
