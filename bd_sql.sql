@@ -1,6 +1,6 @@
-create database teste34;
+create database TESTE;
 
-use teste34;
+use TESTE;
 
 create table teste(
 id int primary key auto_increment,

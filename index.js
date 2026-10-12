@@ -26,7 +26,7 @@ const conn = mysql.createConnection({
     host: 'localhost',
     user: 'root',
     password: '',
-    database: 'teste34'
+    database: 'TESTE'
 });
 
 conn.connect(function(err) {
@@ -91,13 +91,13 @@ app.get('/api/teste', (req, res) => {
 // BUSCAR POR ID
 // ==========================================
 
-app.get('/api/teste/:id_teste', (req, res) => {
+app.get('/api/teste/:id', (req, res) => {
 
-    const id_teste = req.params.id_teste;
+    const id = req.params.id;
 
-    const sql = 'SELECT * FROM teste WHERE id_teste = ?';
+    const sql = 'SELECT * FROM teste WHERE id = ?';
 
-    conn.query(sql, [id_teste], (err, data) => {
+    conn.query(sql, [id], (err, data) => {
 
         if (err) {
 
@@ -159,7 +159,7 @@ app.post('/api/teste', (req, res) => {
 
             mensagem: 'Registro criado com sucesso',
 
-            id_teste: result.insertId,
+            id: result.insertId,
 
             nome: nome
 
@@ -175,9 +175,9 @@ app.post('/api/teste', (req, res) => {
 // ATUALIZAR
 // ==========================================
 
-app.put('/api/teste/:id_teste', (req, res) => {
+app.put('/api/teste/:id', (req, res) => {
 
-    const id_teste = req.params.id_teste;
+    const id = req.params.id;
 
     const { nome } = req.body;
 
@@ -192,10 +192,10 @@ app.put('/api/teste/:id_teste', (req, res) => {
     const sql = `
         UPDATE teste
         SET nome = ?
-        WHERE id_teste = ?
+        WHERE id = ?
     `;
 
-    conn.query(sql, [nome, id_teste], (err, result) => {
+    conn.query(sql, [nome, id], (err, result) => {
 
         if (err) {
 
@@ -219,7 +219,7 @@ app.put('/api/teste/:id_teste', (req, res) => {
 
             mensagem: 'Registro atualizado com sucesso',
 
-            id_teste: id_teste,
+            id: id,
 
             nome: nome
 
@@ -235,13 +235,13 @@ app.put('/api/teste/:id_teste', (req, res) => {
 // EXCLUIR
 // ==========================================
 
-app.delete('/api/teste/:id_teste', (req, res) => {
+app.delete('/api/teste/:id', (req, res) => {
 
-    const id_teste = req.params.id_teste;
+    const id = req.params.id;
 
-    const sql = 'DELETE FROM teste WHERE id_teste = ?';
+    const sql = 'DELETE FROM teste WHERE id = ?';
 
-    conn.query(sql, [id_teste], (err, result) => {
+    conn.query(sql, [id], (err, result) => {
 
         if (err) {
 

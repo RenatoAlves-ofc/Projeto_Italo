@@ -105,7 +105,7 @@ function App() {
 
     setNome(teste.nome);
 
-    setEditandoId(teste.id_teste);
+    setEditandoId(teste.id);
 
   };
 
@@ -474,13 +474,13 @@ function App() {
                   {testes.map((teste) => (
 
                     <tr
-                      key={teste.id_teste}
+                      key={teste.id}
                     >
 
 
                       <td>
 
-                        {teste.id_teste}
+                        {teste.id}
 
                       </td>
 
@@ -527,7 +527,7 @@ function App() {
 
                             onClick={() =>
                               excluir(
-                                teste.id_teste
+                                teste.id
                               )
                             }
 
