@@ -281,3 +281,64 @@ a{
   text-decoration: none;
   color: #fff;
 }
+/* ============================= */
+/* Css extra pra ficar mais bonito */
+
+
+.card {
+  text-align: left;
+}
+
+.form {
+  flex-wrap: wrap;
+}
+
+.input-group select {
+  width: 100%;
+  height: 45px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 15px;
+  background: white;
+}
+
+.categoria {
+  margin-bottom: 25px;
+}
+
+.categoria h3 {
+  color: #b45309;
+  border-bottom: 2px solid #fcd34d;
+  padding-bottom: 6px;
+  margin-bottom: 10px;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 0;
+  border-bottom: 1px dashed #e5e7eb;
+}
+
+.item-info {
+  flex: 1;
+}
+
+.item-info p {
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.preco {
+  font-weight: bold;
+  color: #15803d;
+  white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+  .item {
+    flex-wrap: wrap;
+  }
+}
