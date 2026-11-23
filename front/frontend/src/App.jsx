@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import './App.css';
+// tela de login e cadastro (fica em outro arquivo pra n deixar o App.jsx gigante)
+import Login from './Login';
 
 // endereço do back (a api) onde ficam os itens do cardapio
 const API_URL = 'http://localhost:3000/api/cardapio';
@@ -20,6 +22,27 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
   const [form, setForm] = useState(FORM_VAZIO);
   const [editandoId, setEditandoId] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // usuario logado | começa lendo do localStorage pra n perder o login quando dá F5 na pagina
+  // o localStorage so guarda texto, por isso o JSON.parse | se n tiver nada salvo fica null (ninguem logado)
+  const [usuario, setUsuario] = useState(() => {
+    const salvo = localStorage.getItem('usuario');
+    return salvo ? JSON.parse(salvo) : null;
+  });
+
+  // o Login.jsx chama essa funcao quando o login da certo | guarda o usuario na memoria e no localStorage
+  const entrar = (dadosUsuario) => {
+    localStorage.setItem('usuario', JSON.stringify(dadosUsuario));
+    setUsuario(dadosUsuario);
+  };
+
+  // sair apaga o usuario do localStorage e da memoria | ai o if la embaixo manda de volta pra tela de login
+  const sair = () => {
+    localStorage.removeItem('usuario');
+    setUsuario(null);
+    setItens([]);
+    cancelarEdicao();
+  };
 
 
 // pra vusbar os itens do cardapio no backend (listagem) | async pq vai demorar  pra buscar o item no backend e nao deixar a tela trabada quando ta esperando a resposta
@@ -43,10 +66,13 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
     }
   };
 
-  // roda o buscarItens uma vez so quando a pagina abre | o [] vazio no final é pra n ficar repetindo toda hora
+  // roda o buscarItens quando a pagina abre e tbm quando o usuario loga | so busca se tiver alguem logado
+  // o [usuario] no final faz rodar de novo toda vez q o usuario mudar (login ou sair)
   useEffect(() => {
-    buscarItens();
-  }, []);
+    if (usuario) {
+      buscarItens();
+    }
+  }, [usuario]);
 
   // em vez de criar uma funcao pra cada campo do form, cria uma só e usa o nome do input pra saber qual campo ta sendo alterado
   // o "e" é o evento que ta acontecendo no input, e.target.name é o nome do input que ta sendo alterado, e.target.value é o valor que ta sendo digitado
@@ -138,12 +164,29 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
   const formatarPreco = (valor) =>
     Number(valor).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
 
+  // se n tem ninguem logado mostra so a tela de login | tem q ficar depois de todos os useState/useEffect, o react n deixa o return vir antes dos hooks
+  if (!usuario) {
+    return <Login onLogin={entrar} />;
+  }
+
   // daqui pra baixo é oq aparece na tela
   return (
     <div className="app">
       <header className="header">
-        <h1>🍔 Lanchonete do Renato</h1>
-        <p>Gerenciamento do cardápio</p>
+        <div className="header-topo">
+          <div>
+            <h1>🍔 Lanchonete do Renato</h1>
+            <p>Gerenciamento do cardápio</p>
+          </div>
+
+          {/* nome de quem ta logado e o botao de sair */}
+          <div className="usuario-info">
+            <span>Olá, {usuario.nome}</span>
+            <button className="btn btn-secondary" onClick={sair}>
+              Sair
+            </button>
+          </div>
+        </div>
       </header>
 
       <main className="container">

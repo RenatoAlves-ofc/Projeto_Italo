@@ -14,3 +14,12 @@
         categoria varchar(50) not null
     ) default charset=utf8mb4; -- nao sei se funciona mas coloquei pra garantir que a tabela tambem ficaria como utf8mb4
 
+-- tabela dos usuarios (login e cadastro)
+-- o email é UNIQUE pra n deixar cadastrar 2 pessoas com o mesmo email
+-- a senha tem 255 pq vai guardada criptografada (o hash fica bem maior q a senha digitada)
+CREATE TABLE IF NOT EXISTS usuarios (
+  id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+  nome       VARCHAR(100) NOT NULL,
+  email      VARCHAR(100) NOT NULL UNIQUE,
+  senha      VARCHAR(255) NOT NULL
+) DEFAULT CHARSET=utf8mb4;

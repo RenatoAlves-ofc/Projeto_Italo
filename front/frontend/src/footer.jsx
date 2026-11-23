@@ -1,12 +1,10 @@
-function Footer(){
-    return(
-        <>
-        <nav className="footer">
-            <a href="">Seila</a>
-            <a href="">Seila2</a>
-            <a href="">Seila3</a>
-            </nav>
-        </>
-    )
+// rodape simples no final da pagina
+function Footer() {
+  return (
+    <footer className="footer">
+      <p>🍔 Lanchonete do Renato © 2026</p>
+    </footer>
+  );
 }
-export default Footer
+
+export default Footer;

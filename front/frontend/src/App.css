@@ -16,7 +16,7 @@ input {
 }
 
 .app {
-  min-height: 100vh;
+  flex: 1;
 }
 
 
@@ -271,15 +271,18 @@ tbody tr:hover {
 
 }
 
-.footer{
-  margin: 12px;
-  background-color: #000;
-  
-}
-a{
-  padding: 12px;
-  text-decoration: none;
-  color: #fff;
+/* ============================= */
+/* RODAPÉ */
+/* ============================= */
+
+/* margin-top auto empurra o rodape pro final da pagina quando tem pouco conteudo */
+.footer {
+  margin-top: auto;
+  background: #111827;
+  color: #9ca3af;
+  text-align: center;
+  padding: 20px;
+  font-size: 14px;
 }
 /* ============================= */
 /* Css extra pra ficar mais bonito */
@@ -340,5 +343,58 @@ a{
 @media (max-width: 700px) {
   .item {
     flex-wrap: wrap;
+  }
+}
+
+/* ============================= */
+/* LOGIN E CADASTRO              */
+/* ============================= */
+
+.login-container {
+  width: 90%;
+  max-width: 420px;
+  margin: 40px auto;
+}
+
+/* no login os campos ficam um embaixo do outro (o .form normal deixa lado a lado) */
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* botao que parece link, pra trocar entre login e cadastro */
+.btn-link {
+  display: block;
+  margin: 20px auto 0;
+  background: none;
+  border: none;
+  color: #2563eb;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.btn-link:hover {
+  text-decoration: underline;
+}
+
+/* topo da tela do cardapio com o nome do usuario e o botao sair */
+.header-topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.usuario-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 700px) {
+  .header-topo {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }

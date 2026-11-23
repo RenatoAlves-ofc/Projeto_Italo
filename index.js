@@ -4,6 +4,8 @@ const express = require('express');
 const mysql = require('mysql');
 // cors deixa o react (porta 5173) conversar com a api (porta 3000) | sem ele o navegador bloqueia a requisiçao
 const cors = require('cors');
+// bcryptjs criptografa a senha antes de guardar no banco | assim ninguem ve a senha real nem olhando a tabela
+const bcrypt = require('bcryptjs');
 
 // app é o servidor em si | tudo q a api faz é em cima dele
 const app = express();
@@ -46,6 +48,84 @@ conn.connect(function (err) {
 // rota principal | serve so pra testar se a api ta ligada, abre localhost:3000 no navegador
 app.get('/', (req, res) => {
     res.json({ mensagem: 'API do cardápio funcionando!' });
+});
+
+// POST cadastrar usuario novo
+app.post('/api/cadastro', (req, res) => {
+    const { nome, senha } = req.body;
+    // email em minusculo e sem espaço, pq "Renato@gmail.com" e "renato@gmail.com" tem q ser o mesmo
+    const email = (req.body.email || '').trim().toLowerCase();
+
+    if (!nome || !email || !senha) {
+        return res.status(400).json({ erro: 'Nome, email e senha são obrigatórios' });
+    }
+
+    if (senha.length < 4) {
+        return res.status(400).json({ erro: 'A senha precisa ter pelo menos 4 caracteres' });
+    }
+
+    // hashSync transforma a senha num texto embaralhado | o 10 é a força da criptografia
+    const senhaCriptografada = bcrypt.hashSync(senha, 10);
+
+    const sql = 'INSERT INTO usuarios (nome, email, senha) VALUES (?, ?, ?)';
+
+    conn.query(sql, [nome, email, senhaCriptografada], (err, result) => {
+        if (err) {
+            // ER_DUP_ENTRY é o erro q o mysql da quando o email ja existe (por causa do UNIQUE) | 409 é "conflito"
+            if (err.code === 'ER_DUP_ENTRY') {
+                return res.status(409).json({ erro: 'Esse email já está cadastrado' });
+            }
+
+            console.log(err);
+            return res.status(500).json({ erro: 'Erro ao cadastrar o usuário' });
+        }
+
+        res.status(201).json({
+            mensagem: 'Usuário cadastrado com sucesso',
+            id_usuario: result.insertId
+        });
+    });
+});
+
+// POST login | recebe email e senha e confere com oq ta no banco
+app.post('/api/login', (req, res) => {
+    const { senha } = req.body;
+    const email = (req.body.email || '').trim().toLowerCase();
+
+    if (!email || !senha) {
+        return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
+    }
+
+    // busca so pelo email | a senha n da pra procurar no sql pq ta criptografada, entao compara aqui no node
+    const sql = 'SELECT * FROM usuarios WHERE email = ?';
+
+    conn.query(sql, [email], (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.status(500).json({ erro: 'Erro ao fazer login' });
+        }
+
+        // 401 é "n autorizado" | a msg é a mesma pra email errado e senha errada, assim n da pra descobrir quais emails existem
+        if (data.length === 0) {
+            return res.status(401).json({ erro: 'Email ou senha incorretos' });
+        }
+
+        const usuario = data[0];
+
+        // compareSync compara a senha digitada com a criptografada do banco | devolve true ou false
+        const senhaCerta = bcrypt.compareSync(senha, usuario.senha);
+
+        if (!senhaCerta) {
+            return res.status(401).json({ erro: 'Email ou senha incorretos' });
+        }
+
+        // manda de volta so o id, nome e email | a senha nunca sai da api
+        res.status(200).json({
+            id_usuario: usuario.id_usuario,
+            nome: usuario.nome,
+            email: usuario.email
+        });
+    });
 });
 
 // GET listar todos os itens | o ORDER BY deixa tudo organizado por categoria e depois por nome
