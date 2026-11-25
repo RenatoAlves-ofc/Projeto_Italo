@@ -398,3 +398,37 @@ tbody tr:hover {
     align-items: flex-start;
   }
 }
+
+
+/* ============================= */
+/* PAINEL ADMIN (LOGS)           */
+/* ============================= */
+
+/* filtros lado a lado em cima da tabela */
+.filtros {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+/* etiqueta colorida da acao */
+.badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: bold;
+  white-space: nowrap;
+}
+
+.badge-verde    { background: #dcfce7; color: #166534; }
+.badge-vermelho { background: #fee2e2; color: #991b1b; }
+.badge-amarelo  { background: #fef3c7; color: #92400e; }
+.badge-azul     { background: #dbeafe; color: #1e40af; }
+.badge-cinza    { background: #e5e7eb; color: #374151; }
+
+@media (max-width: 700px) {
+  .filtros {
+    flex-direction: column;
+  }
+}

@@ -2,9 +2,13 @@ import { useEffect, useState } from 'react';
 import './App.css';
 // tela de login e cadastro (fica em outro arquivo pra n deixar o App.jsx gigante)
 import Login from './Login';
+// painel do admin com os logs (tambem em outro arquivo)
+import Logs from './Logs';
 
 // endereço do back (a api) onde ficam os itens do cardapio
 const API_URL = 'http://localhost:3000/api/cardapio';
+// endereço base da api | usa no logout (os logs ficam no Logs.jsx)
+const API_BASE = 'http://localhost:3000/api';
 
 // as categorias do cardapio | usa no select do form e pra separar os itens na tela
 const CATEGORIAS = ['Lanches', 'Porções', 'Bebidas', 'Sobremesas'];
@@ -36,12 +40,46 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
     setUsuario(dadosUsuario);
   };
 
-  // sair apaga o usuario do localStorage e da memoria | ai o if la embaixo manda de volta pra tela de login
-  const sair = () => {
+  // qual tela ta aparecendo: 'cardapio' ou 'logs' (a de logs so o admin consegue abrir)
+  const [tela, setTela] = useState('cardapio');
+
+  // limpa o login so aqui no react (localStorage e memoria) | ai o if la embaixo manda de volta pra tela de login
+  const limparLogin = () => {
     localStorage.removeItem('usuario');
     setUsuario(null);
     setItens([]);
+    setTela('cardapio');
     cancelarEdicao();
+  };
+
+  // botao sair | avisa a api pra apagar o token e anotar o logout no log, e depois limpa o login aqui
+  // n tem await pq n precisa esperar a resposta | o catch vazio é pra n dar erro no console se a api tiver desligada
+  const sair = () => {
+    fetch(`${API_BASE}/logout`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${usuario.token}` }
+    }).catch(() => {});
+
+    limparLogin();
+  };
+
+  // fetch com o token ja colocado no header | agora todas as rotas da api exigem login
+  // se a api responder 401 (token errado ou sessao acabou) limpa o login e manda pra tela de login
+  const chamarApi = async (url, opcoes = {}) => {
+    const response = await fetch(url, {
+      ...opcoes,
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${usuario.token}`
+      }
+    });
+
+    if (response.status === 401) {
+      limparLogin();
+      throw new Error('Sua sessão acabou, faça login de novo');
+    }
+
+    return response;
   };
 
 
@@ -49,7 +87,7 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
   const buscarItens = async () => {
     try {
       setLoading(true);
-      const response = await fetch(API_URL); // deu green e funciono
+      const response = await chamarApi(API_URL); // deu green e funciono
 
       if (!response.ok) {
         throw new Error('Erro ao buscar o cardápio'); // deu red e nao funcionou
@@ -60,7 +98,7 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
       setItens(data);
     } catch (error) {
       console.error(error);
-      alert('Erro ao carregar o cardápio');
+      alert(error.message);
     } finally {
       setLoading(false); // finally roda sempre, dando certo ou errado | tira o carregando da tela
     }
@@ -95,9 +133,8 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
     const metodo = editandoId ? 'PUT' : 'POST';
 
     try {
-      const response = await fetch(url, {
+      const response = await chamarApi(url, {
         method: metodo,
-        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form) // JSON.stringify transforma o form em texto pra mandar pro back
       });
 
@@ -141,7 +178,7 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
     }
 
     try {
-      const response = await fetch(`${API_URL}/${id_item}`, { method: 'DELETE' });
+      const response = await chamarApi(`${API_URL}/${id_item}`, { method: 'DELETE' });
       const data = await response.json();
 
       if (!response.ok) {
@@ -182,6 +219,17 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
           {/* nome de quem ta logado e o botao de sair */}
           <div className="usuario-info">
             <span>Olá, {usuario.nome}</span>
+
+            {/* esse botao so aparece pro admin | alterna entre o cardapio e o painel de logs */}
+            {usuario.tipo === 'admin' && (
+              <button
+                className="btn btn-primary"
+                onClick={() => setTela(tela === 'logs' ? 'cardapio' : 'logs')}
+              >
+                {tela === 'logs' ? 'Voltar ao cardápio' : 'Painel admin'}
+              </button>
+            )}
+
             <button className="btn btn-secondary" onClick={sair}>
               Sair
             </button>
@@ -189,7 +237,11 @@ function App() { //as memorias do componente | serve pra guarda a lista de itens
         </div>
       </header>
 
-      <main className="container">
+      {/* painel de logs | o && so mostra o Logs quando a tela é 'logs' e o usuario é admin (a api tbm confere isso) */}
+      {tela === 'logs' && usuario.tipo === 'admin' && <Logs chamarApi={chamarApi} />}
+
+      {/* o hidden esconde o cardapio quando ta na tela de logs | assim o form n perde oq tava sendo digitado */}
+      <main className="container" hidden={tela === 'logs'}>
         {/* form de cadastrar e editar | o titulo muda dependendo se ta editando ou n */}
         <section className="card">
           <h2>{editandoId ? 'Editar item' : 'Novo item'}</h2>
